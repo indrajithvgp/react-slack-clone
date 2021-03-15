@@ -88,7 +88,7 @@ export class Channels extends Component {
             key={channel.id} 
             name={channel.name} 
             active={channel.id === this.state.activeChannel.id}
-            style={{opacity:0.7}}>{channel.name}</Menu.Item>
+            style={{opacity:0.7}}>{'#'+ channel.name}</Menu.Item>
         ))
     )
     handleSubmit = (e)=>{
@@ -112,8 +112,8 @@ export class Channels extends Component {
     render() {
         const {channels, modal} = this.state
         return (
-            <>
-            <Menu.Menu style={{paddingBottom:'2em'}}>
+            <React.Fragment>
+            <Menu.Menu className="menu">
                 <Menu.Item>
                     <span>
                         <Icon name="exchange"/>CHANNELS
@@ -153,7 +153,7 @@ export class Channels extends Component {
                     </Button>
                 </Modal.Actions>
             </Modal>
-            </>
+            </React.Fragment>
         )
     }
 }

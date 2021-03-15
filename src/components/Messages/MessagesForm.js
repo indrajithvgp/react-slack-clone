@@ -3,6 +3,7 @@ import firebase from '../../firebase'
 import {Segment, Button, Input} from 'semantic-ui-react'
 import FileModal from './FileModal'
 import uuidv4 from 'uuid/v4'
+import ProgressBar from './ProgressBar'
 
 export class MessagesForm extends Component {
     state = {
@@ -65,6 +66,7 @@ export class MessagesForm extends Component {
         }, ()=>{
             this.state.uploadTask.on('state_changed', snap=>{
                 const percentUploaded = Math.round((snap.bytesTransferred / snap.totalBytes)*100)
+                this.props.isProgressBarVisible(percentUploaded)
                 this.setState({percentUploaded: percentUploaded})
             }, err=>{
                 console.log(err)
@@ -85,6 +87,7 @@ export class MessagesForm extends Component {
         .push()
         .set(this.createMessage(fileURL))
         .then(()=>{
+            this.props.isProgressBarVisible(this.state.percentUploaded)
             this.setState({uploadState:'done'})
         })
         .catch(err=>{
@@ -94,7 +97,7 @@ export class MessagesForm extends Component {
     }
     render() {
 
-        const {errors, message, loading, modal} = this.state
+        const {errors, message, loading, modal, percentUploaded, uploadState} = this.state
 
         return (
             <Segment className="messages__form">
@@ -117,11 +120,13 @@ export class MessagesForm extends Component {
                     <Button
                         color="teal"
                         onClick = {this.openModal}
+                        disabled={uploadState==="uploading"}
                         content="Upload Media"
                         labelPosition="right"
                         icon="cloud upload"/>
-                        <FileModal modal={modal} uploadFile={this.uploadFile} closeModal={this.closeModal}/>
                 </Button.Group>
+                <FileModal modal={modal} uploadFile={this.uploadFile} closeModal={this.closeModal}/>
+                <ProgressBar uploadState={uploadState} percentUploaded={percentUploaded}/>
             </Segment>
         )
     }
