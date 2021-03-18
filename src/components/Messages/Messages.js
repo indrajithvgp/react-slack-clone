@@ -8,6 +8,7 @@ import Message from './Message'
 export class Messages extends Component {
     state={
         messagesRef: firebase.database().ref('messages'),
+        privateMessagesRef:firebase.database().ref('privateMessages'),
         channel:this.props.currentChannel,
         user:this.props.currentUser,
         messages:[], 
@@ -16,7 +17,8 @@ export class Messages extends Component {
         numUniqueUsers:'',
         searchTerm:'',
         searchLoading:false,
-        searchResults:[]
+        searchResults:[],
+        isPrivateChannel:this.props.isPrivateChannel
     }
     componentDidMount(){
         const {channel, user} = this.state
@@ -29,13 +31,17 @@ export class Messages extends Component {
     }
     addMessageListeners=channelId=>{
         let loadedMessages = []
-        this.state.messagesRef.child(channelId).on('child_added', snap=>{
+        const ref = this.getMessagesRef()
+        ref.child(channelId).on('child_added', snap=>{
             loadedMessages.push(snap.val())
             this.setState({messages:loadedMessages, messageLoading:false})
         })
         this.countUniqueUsers(loadedMessages)
     }
-
+    getMessagesRef = ()=>{
+        const {messagesRef, privateMessagesRef, privateChannel} = this.state
+        return privateChannel ? privateMessagesRef : messagesRef
+    }
     countUniqueUsers = messages =>{
         const uniqueUsers = messages.reduce((acc, message)=>{
             if(!acc.includes(message.user.name)){
@@ -67,7 +73,7 @@ export class Messages extends Component {
         
         
     }
-    displayChannelName = channel => channel ? `#${channel.name}` :''
+    displayChannelName = channel => channel ? `${this.state.isPrivateChannel ? '@' :'#'}${channel.name}`: ''
 
     handleSearchChange = (e)=>{
         this.setState({searchTerm:e.target.value, searchLoading:true}
@@ -89,12 +95,12 @@ export class Messages extends Component {
     }
 
     render() {
-        console.log(this.state)
-        const {messagesRef, channel, user, messages, searchLoading, numUniqueUsers, progressBar, searchTerm, searchResults} = this.state
+        const {messagesRef, isPrivateChannel, channel, user, messages, searchLoading, numUniqueUsers, progressBar, searchTerm, searchResults} = this.state
         return (
             <>
                 <MessagesHeader handleSearchChange={this.handleSearchChange} 
-                numUniqueUsers={numUniqueUsers} 
+                numUniqueUsers={numUniqueUsers}
+                isPrivateChannel={isPrivateChannel} 
                 searchLoading={searchLoading}
                 channelName={this.displayChannelName(channel)}/>
                     <Segment>
@@ -102,7 +108,7 @@ export class Messages extends Component {
                         {searchTerm ? this.displayMessages(searchResults):this.displayMessages(messages)}
                         </Comment.Group>
                     </Segment>
-                <MessagesForm isProgressBarVisible={this.isProgressBarVisible} currentUser={user} currentChannel={channel} messagesRef={messagesRef}/>
+                <MessagesForm getMessagesRef={this.getMessagesRef} isPrivateChannel={isPrivateChannel} isProgressBarVisible={this.isProgressBarVisible} currentUser={user} currentChannel={channel} messagesRef={messagesRef}/>
             </>
         )
     }

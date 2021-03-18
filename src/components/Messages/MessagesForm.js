@@ -40,11 +40,11 @@ export class MessagesForm extends Component {
         return message
     }
     sendMessage = ()=>{
-        const {messagesRef} = this.props
+        const {getMessagesRef} = this.props
         const {message, channel} = this.state
         if(message){
             this.setState({loading:true})
-            messagesRef.child(channel.id).push().set(this.createMessage())
+            getMessagesRef().child(channel.id).push().set(this.createMessage())
             .then(()=>{
                 this.setState({loading:false, message:'', errors:[]})
             })
@@ -56,10 +56,17 @@ export class MessagesForm extends Component {
             this.setState({errors:this.state.errors.concat({message:"Add a message"})})
         }
     }
+    getPath=()=>{
+        if(this.props.isPrivateChannel){
+            return `chat/private-${this.state.channel.id}`
+        }else{
+            return 'chat/public'
+        }
+    }
     uploadFile=(file, metaData)=>{
         const pathToUpload = this.state.channel.id
-        const ref = this.props.messagesRef
-        const filePath = `chat/public/${uuidv4()}`
+        const ref = this.props.getMessagesRef()
+        const filePath = `${this.getPath()}/${uuidv4()}`
         this.setState({
             uploadState:'uploading',
             uploadTask:this.state.storageRef.child(filePath).put(file, metaData)

@@ -64,7 +64,6 @@ export class Register extends Component {
                     photoURL:`http://gravatar.com/avatar/${md5(createdUser.user.email)}?d-identicon`
                 }).then(()=>{
                     this.saveUser(createdUser).then(()=>{
-                        console.log("User Saved")
                         this.setState({loading:false})
                     })
                 }).catch(error=>{
@@ -81,14 +80,14 @@ export class Register extends Component {
     }
 
     saveUser = (createdUser)=>{
-        return db.collection('users').doc(createdUser.user.uid).set({
-            name: createdUser.user.displayName,
-            avatar: createdUser.user.photoURL
-        })
-        // return this.state.usersRef.child(createdUser.user.uid).set({
+        // return db.collection('users').doc(createdUser.user.uid).set({
         //     name: createdUser.user.displayName,
         //     avatar: createdUser.user.photoURL
         // })
+        return this.state.usersRef.child(createdUser.user.uid).set({
+            name: createdUser.user.displayName,
+            avatar: createdUser.user.photoURL
+        })
     }
     handleInputError = (errors, input)=>{
         return errors.some(error => error.message.toLowerCase().includes(input)) ? 'error' : ''
