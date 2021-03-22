@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {Grid, Form, Segment, Header, Button, Message, Icon} from 'semantic-ui-react'
 import {Link} from 'react-router-dom'
-import firebase, {db} from '../../firebase'
+import firebase from '../../firebase'
 
 export class Login extends Component {
     state={
