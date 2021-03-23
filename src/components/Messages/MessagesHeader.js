@@ -11,7 +11,7 @@ export class MessagesHeader extends Component {
                 <Header fluid="true" as='h3' floated="left" style={{marginBottom:0}}>
                 <span>
                 {channelName}
-                {!isPrivateChannel && (<Icon onClick={handleStar} name={isChannelStarred ? 'star':'star outline'}  name={"star outline"} color={isChannelStarred ? 'yellow':'black'} />)}
+                {!isPrivateChannel && (<Icon onClick={handleStar} name={isChannelStarred ? 'star':'star outline'}  color={isChannelStarred ? 'yellow':'black'} />)}
                 </span>
                     <Header.Subheader>{numUniqueUsers}</Header.Subheader>
                 </Header>
