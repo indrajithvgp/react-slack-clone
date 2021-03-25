@@ -22,7 +22,6 @@ userColors:[]}
         let userColors = []
         this.state.usersRef.child(`${userId}/colors`).on('child_added', snap=>{
             userColors.unshift(snap.val())
-            console.log(userColors)
             this.setState({userColors})
         })
     }
@@ -52,12 +51,12 @@ userColors:[]}
     saveColors =(primary, secondary)=>{
         this.state.usersRef.child(`${this.state.user.uid}/colors`)
         .push().update({primary, secondary}).then(()=>{
-        console.log('Colors added')
         this.closeModal()}).catch(err=>console.log(err))
     }
     render() {
         const {modal, primary, secondary, userColors} = this.state
         return (
+            
             <Sidebar 
             as={Menu}
             icon="labeled"

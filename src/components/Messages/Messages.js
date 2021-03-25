@@ -107,7 +107,6 @@ export class Messages extends Component {
             }
             return acc
         }, {})
-        console.log(userPosts)
         this.props.setUserPosts(userPosts)
     }
 

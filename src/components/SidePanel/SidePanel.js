@@ -9,7 +9,7 @@ export class SidePanel extends Component {
     render() {
         const {currentUser, primaryColor} = this.props
         return (
-        <Menu size="large" inverted fixed="left" vertical style={{background:primaryColor, fontSize:'1.2em'}}>
+        <Menu size="large" inverted fixed="left" vertical style={{overflowY:"scroll", background:primaryColor, fontSize:'1.2em'}}>
             <UserPanel primaryColor={primaryColor} currentUser={currentUser}/>
             <Starred currentUser={currentUser}/>
             <Channels currentUser={currentUser}/>
