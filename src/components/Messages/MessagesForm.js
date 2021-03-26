@@ -9,6 +9,7 @@ export class MessagesForm extends Component {
     state = {
         storageRef:firebase.storage().ref(),
         message:'',
+        typingRef:firebase.database().ref('typing'),
         loading:false,
         channel:this.props.currentChannel,
         user:this.props.currentUser,
@@ -41,12 +42,13 @@ export class MessagesForm extends Component {
     }
     sendMessage = ()=>{
         const {getMessagesRef} = this.props
-        const {message, channel} = this.state
+        const {message, channel, user, typingRef} = this.state
         if(message){
             this.setState({loading:true})
             getMessagesRef().child(channel.id).push().set(this.createMessage())
             .then(()=>{
                 this.setState({loading:false, message:'', errors:[]})
+                typingRef.child(channel.id).child(user.uid).remove()
             })
             .catch((err)=>{
                 console.log(err)
@@ -102,6 +104,14 @@ export class MessagesForm extends Component {
                 this.setState({errors:this.state.errors.concat(err)})
         })
     }
+    handleKeyDown=()=>{
+        const {message, typingRef, channel, user} = this.state
+        if(message){
+            typingRef.child(channel.id).child(user.uid).set(user.displayName)
+        }else{
+            typingRef.child(channel.id).child(user.uid).remove()
+        }
+    }
     render() {
 
         const {errors, message, loading, modal, percentUploaded, uploadState} = this.state
@@ -113,6 +123,7 @@ export class MessagesForm extends Component {
                 labelPosition ="left"
                 value={message}
                 onChange={this.handleChange}
+                onKeyDown={this.handleKeyDown}
                 placeholder="Write your message"
                 className={errors.some((e)=>e.message.includes('message')) ? 'error':''}
                 />
