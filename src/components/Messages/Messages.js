@@ -7,6 +7,7 @@ import Message from './Message'
 import {connect} from 'react-redux'
 import {setUserPosts} from '../../actions'
 import Typing from './Typing'
+import Skeleton from './Skeleton'
 
 export class Messages extends Component {
     state={
@@ -34,6 +35,14 @@ export class Messages extends Component {
             this.addListeners(channel.id)
             this.addUserStarsListeners(channel.id, user.uid)    
         }
+    }
+    // componentDidUpdate(prevProps, prevState){
+    //     if(this.messagesEnd){
+    //         this.scrollToBottom()
+    //     }
+    // }
+    scrollToBottom=()=>{
+        this.messagesEnd.scrollIntoView({behaviour:'smooth'})
     }
     addUserStarsListeners = (channelId, userId) => {
         this.state.usersRef.child(userId).child('starred').once('value')
@@ -194,10 +203,14 @@ export class Messages extends Component {
         ))
     )
 
+    displayMessagesSkeleton =(loading)=>( loading ? (<React.Fragment>  {[...Array(10)].map((_,i)=> (<Skeleton key={i}/>))} </React.Fragment>) : null )
+        
+        
+
     render() {
         const {messagesRef, isPrivateChannel, privateChannel, isChannelStarred, 
             channel, user, messages, searchLoading, numUniqueUsers, 
-            typingUsers, progressBar, searchTerm, searchResults} = this.state
+            typingUsers, progressBar, searchTerm, searchResults, messageLoading} = this.state
         return (
             <>
                 <MessagesHeader handleSearchChange={this.handleSearchChange} 
@@ -209,8 +222,10 @@ export class Messages extends Component {
                 channelName={this.displayChannelName(channel)}/>
                     <Segment>
                         <Comment.Group className={progressBar ? "messages__progress":'messages'}>
+                        {this.displayMessagesSkeleton(messageLoading)}
                         {searchTerm ? this.displayMessages(searchResults):this.displayMessages(messages)}
                         {this.displayTypingUsers(typingUsers)}
+                        <div ref={node=>(this.messagesEnd =node)}></div>
                         </Comment.Group>
                     </Segment>
                 <MessagesForm getMessagesRef={this.getMessagesRef} isPrivateChannel={isPrivateChannel} isProgressBarVisible={this.isProgressBarVisible} currentUser={user} currentChannel={channel} messagesRef={messagesRef}/>
