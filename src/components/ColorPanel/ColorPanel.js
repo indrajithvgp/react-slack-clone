@@ -17,7 +17,9 @@ userColors:[]}
             this.addListeners(this.state.user.uid)
         }
     }
-
+    componentWillUnmount =()=>{
+        this.state.usersRef.child(`${this.state.user.uid}/colors`).off()
+    }
     addListeners = (userId)=>{
         let userColors = []
         this.state.usersRef.child(`${userId}/colors`).on('child_added', snap=>{

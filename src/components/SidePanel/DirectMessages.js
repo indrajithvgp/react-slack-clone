@@ -22,8 +22,9 @@ export class DirectMessages extends Component {
         this.removeListeners()
     }
     removeListeners=()=>{
-        this.state.connectedRef.off()
-        this.state.presenceRef.off()
+        // this.state.connectedRef.off()
+        // this.state.presenceRef.off()
+        // // this.state.usersRef.off()
     }
     addListeners = currentUserId => {
         let loadedUsers = []
