@@ -194,7 +194,7 @@ export class Messages extends Component {
     isProgressBarVisible = (percent)=>{
         if(percent>0){
             this.setState({progressBar:false})
-            // setTimeout(()=>{this.setState({progressBar:false})}, 2000)
+            setTimeout(()=>{this.setState({progressBar:false})}, 2000)
         }
         
         

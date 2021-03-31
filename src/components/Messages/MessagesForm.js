@@ -20,7 +20,7 @@ export class MessagesForm extends Component {
         uploadState:'',
         uploadTask:null,
         percentUploaded:0,
-        emojiPicker:false
+        emojiPicker:false,
     }
     componentWillUnmount(){
         if(this.state.uploadTask !== null){
@@ -106,6 +106,7 @@ export class MessagesForm extends Component {
         const filePath = `${this.getPath()}/${uuidv4()}`
         this.setState({
             uploadState:'uploading',
+            progressLoading:true,
             uploadTask:this.state.storageRef.child(filePath).put(file, metaData)
         }, ()=>{
             this.state.uploadTask.on('state_changed', snap=>{
@@ -152,7 +153,7 @@ export class MessagesForm extends Component {
     }
     render() {
 
-        const {errors, message, loading, modal, percentUploaded,emojiPicker, uploadState} = this.state
+        const {errors, message, loading, modal, percentUploaded,emojiPicker, uploadState, progressLoading} = this.state
 
         return (
             <Segment className="messages__form">
@@ -189,10 +190,12 @@ export class MessagesForm extends Component {
                         icon="cloud upload"/>
                 </Button.Group>
                 <FileModal modal={modal} uploadFile={this.uploadFile} closeModal={this.closeModal}/>
-                <ProgressBar uploadState={uploadState} percentUploaded={percentUploaded}/>
+                
             </Segment>
         )
     }
 }
 
 export default MessagesForm
+
+// <ProgressBar uploadState={uploadState} percentUploaded={percentUploaded}/>
