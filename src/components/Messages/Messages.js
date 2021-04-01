@@ -220,11 +220,11 @@ export class Messages extends Component {
         setTimeout(()=>this.setState({searchLoading:false}), 1000)
     }
 
-    displayTypingUsers = users =>(
-        users.length > 0 && users.map(user => (
-            <div key={user.id} style={{display:'flex', marginBottom:'0.2em', alignItems: 'center'}}><span className="user__typing">Douglas is Typing</span><Typing/></div>
-        ))
-    )
+    // displayTypingUsers = users =>(
+    //     users.length > 0 && users.map(user => (
+    //         <div key={user.id} style={{display:'flex', marginBottom:'0.2em', alignItems: 'center'}}><span className="user__typing">Douglas is Typing</span><Typing/></div>
+    //     ))
+    // )
 
     displayMessagesSkeleton =(loading)=>( loading ? (<React.Fragment>  {[...Array(10)].map((_,i)=> (<Skeleton key={i}/>))} </React.Fragment>) : null )
         
@@ -247,7 +247,7 @@ export class Messages extends Component {
                         <Comment.Group className={progressBar ? "messages__progress":'messages'}>
                         {this.displayMessagesSkeleton(messageLoading)}
                         {searchTerm ? this.displayMessages(searchResults):this.displayMessages(messages)}
-                        {this.displayTypingUsers(typingUsers)}
+                        
                         <div ref={node=>(this.messagesEnd =node)}></div>
                         </Comment.Group>
                     </Segment>
@@ -258,3 +258,4 @@ export class Messages extends Component {
 }
 
 export default connect(null, {setUserPosts})(Messages)
+
